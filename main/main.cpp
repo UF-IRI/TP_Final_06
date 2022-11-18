@@ -2,6 +2,9 @@
 #include "funciones.h"
 #include <iostream>
 
+// El using namespace std; esta en funciones.h
+// Los testeos estan en casos_base.cpp
+
 int main(void) {
 
 	// Inicializamos los largos de arrays, y los punteros correspondientes

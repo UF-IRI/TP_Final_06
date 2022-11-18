@@ -61,6 +61,7 @@ void agregarContacto(Contacto*& listado, Contacto agregar, int* largo);
 void agregarMedico(Medico*& listado, Medico agregar, int* largo);
 void agregarPaciente(Paciente*& listado, Paciente agregar, int* largo);
 
+// Funcion auxiliar
 // Ordena el listado principal de consultas
 // Primero segun el paciente (usando el documento)
 // y luego segun las fechas de consultas, de mas antigua a mas reciente
@@ -87,5 +88,6 @@ void paraContactar(Consulta*& noArchivados, Contacto*& listaCont, Medico*& lista
 // En caso de que el paciente no quiera retornar, la nueva consulta estaria como "0/0/0"
 void simularSecretaria();
 
+// Funcion auxiliar
 // Retorna true si el anio es bisiesto, false en caso contrario
 bool esBisiesto(int anio);
