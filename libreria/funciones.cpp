@@ -202,7 +202,11 @@ void cargarDatosPacientes(string filePath, Paciente*& listado, int* largo) {
 		getline(inputString, coma, ' ');
 
 		getline(inputString, auxPac.nombre, ' ');
-		auxPac.dni = stoi(auxString);
+		
+		if (chequearDNI(auxString)) //VER SI ESTO ES DNI
+		{
+			auxPac.dni = stoi(auxString); //VER SI LO CAMBIAMOS
+		}
 
 		getline(inputString, coma, ' ');
 
@@ -241,12 +245,12 @@ void cargarDatosPacientes(string filePath, Paciente*& listado, int* largo) {
 	fp.close();
 }
 
-
 void agregarConsulta(Consulta*& listado, Consulta agregar, int* largo) {
 	*largo += 1;
-	Consulta* newListado = new Consulta[*largo];
+	Consulta* newListado = nullptr; //inicializamos
+	newListado = new Consulta[*largo];
 	int i = 0;
-	while (i < *largo - 1) {
+	while (i < *largo - 1 && *largo - 1 != 0) {
 		newListado[i] = listado[i];
 		i++;
 	}
@@ -258,9 +262,10 @@ void agregarConsulta(Consulta*& listado, Consulta agregar, int* largo) {
 
 void agregarContacto(Contacto*& listado, Contacto agregar, int* largo) {
 	*largo += 1;
-	Contacto* newListado = new Contacto[*largo];
+	Contacto* newListado = nullptr;
+	newListado = new Contacto[*largo];
 	int i = 0;
-	while (i < *largo - 1) {
+	while (i < *largo - 1 && *largo - 1 != 0) {
 		newListado[i] = listado[i];
 		i++;
 	}
@@ -272,9 +277,10 @@ void agregarContacto(Contacto*& listado, Contacto agregar, int* largo) {
 
 void agregarMedico(Medico*& listado, Medico agregar, int* largo) {
 	*largo += 1;
-	Medico* newListado = new Medico[*largo];
+	Medico* newListado = nullptr;
+	newListado = new Medico[*largo];
 	int i = 0;
-	while (i < *largo - 1) {
+	while (i < *largo - 1 && *largo - 1 != 0) {
 		newListado[i] = listado[i];
 		i++;
 	}
@@ -286,9 +292,10 @@ void agregarMedico(Medico*& listado, Medico agregar, int* largo) {
 
 void agregarPaciente(Paciente*& listado, Paciente agregar, int* largo) {
 	*largo += 1;
-	Paciente* newListado = new Paciente[*largo];
+	Paciente* newListado = nullptr;
+	newListado = new Paciente[*largo];
 	int i = 0;
-	while (i < *largo - 1) {
+	while (i < *largo - 1 && *largo-1 !=0) {
 		newListado[i] = listado[i];
 		i++;
 	}
@@ -370,7 +377,7 @@ void filtradoConsultas(Consulta*& listado, Consulta*& archivados, Consulta*& noA
 		// el j-1 es para que quede posicionado exactamente en la ultima fecha consultada del paciente
 
 
-		int diferencia = difftime(hoy, ultCons) / (60 * 60 * 24);
+		float diferencia = difftime(hoy, ultCons) / (60 * 60 * 24);
 		// 60 por segundos en un minuto, 60 por minutos en una hora, 24 por horas en un dia,
 		// quedando asi la cantidad de dias entre fechas
 		// 
@@ -571,4 +578,27 @@ bool esBisiesto(int anio) {
 		aux = false;
 	}
 	return aux;
+}
+
+bool chequearDNI(string DNI)
+{
+	int tam = DNI.length();
+	bool flag = true;
+	if (tam == 7 || tam == 8)
+	{
+		for (int i = 0; i < tam; i++)
+		{//si no son numeros, devuelve falso
+			if (DNI[i] != '0' || DNI[i] != '1' DNI[i] != '2' || DNI[i] != '3' || DNI[i] != '4' || DNI[i] != '5' || DNI[i] != '6' || DNI[i] != '7' || DNI[i] != '8' || DNI[i] != '9')
+			{
+				flag = false;
+				break;
+			}
+		}
+	}
+	else
+	{
+		flag = false;
+	}
+	
+	return flag;
 }

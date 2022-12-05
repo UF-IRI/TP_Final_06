@@ -12,7 +12,7 @@ typedef struct fecha {
 }Fecha;
 
 typedef struct consulta {
-	unsigned int dni_pac;
+	string dni_pac;
 	Fecha fechaSoli;
 	Fecha fechaCons;
 	bool presento;
@@ -20,7 +20,7 @@ typedef struct consulta {
 }Consulta;
 
 typedef struct contacto {
-	unsigned int dni_pac;
+	string dni_pac;
 	string telefono;
 	string celular;
 	string direccion;
@@ -91,3 +91,7 @@ void simularSecretaria();
 // Funcion auxiliar
 // Retorna true si el anio es bisiesto, false en caso contrario
 bool esBisiesto(int anio);
+
+// Funcion auxiliar
+// retorna true si el dni son solo numeros y si el largo es entre 7 y 8, false en caso contrario.
+bool chequearDNI(string DNI);

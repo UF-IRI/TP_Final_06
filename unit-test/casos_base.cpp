@@ -22,8 +22,9 @@ namespace PacienteTest::tests {
 		// Testeamos si el elemento que queremos agregar fue agregado correctamente
 		// (valga la redundancia)
 		int n = 0;
-		int* largo = &n;
-		Paciente* lista = new Paciente[*largo];
+		
+		Paciente* lista = nullptr;
+		lista = new Paciente[n];
 		Paciente auxPac;
 
 		auxPac.dni = 42526433;
@@ -36,7 +37,7 @@ namespace PacienteTest::tests {
 		auxPac.estado = "fallecido";
 		auxPac.id_os = "IOSFA";
 
-		agregarPaciente(lista, auxPac, largo);
+		agregarPaciente(lista, auxPac, &n);
 
 		EXPECT_EQ(lista[0].dni, auxPac.dni);
 		EXPECT_EQ(lista[0].nombre, auxPac.nombre);
@@ -47,7 +48,7 @@ namespace PacienteTest::tests {
 		EXPECT_EQ(lista[0].natalicio.anio, auxPac.natalicio.anio);
 		EXPECT_EQ(lista[0].estado, auxPac.estado);
 		EXPECT_EQ(lista[0].id_os, auxPac.id_os);
-		EXPECT_EQ(*largo, 1);
+		EXPECT_EQ(n, 1);
 
 		delete[] lista;
 	}
@@ -57,10 +58,10 @@ namespace PacienteTest::tests {
 		// Si ambos estan bien significa que el proceso de leer el archivo fue exitoso
 
 		int n = 0;
-		int* largo = &n;
-		Paciente* lista = new Paciente[*largo];
+		Paciente* lista = nullptr;
+		lista = new Paciente[n];
 		string filePath = (BASE_PATH + "../data_files/input/Pacientes.csv");
-		cargarDatosPacientes(filePath, lista, largo);
+		cargarDatosPacientes(filePath, lista, &n);
 		EXPECT_EQ(lista[0].dni, 10242582);
 		EXPECT_EQ(lista[0].nombre, "Cersty");
 		EXPECT_EQ(lista[0].apellido, "Thurston");
@@ -71,15 +72,15 @@ namespace PacienteTest::tests {
 		EXPECT_EQ(lista[0].estado, "internado");
 		EXPECT_EQ(lista[0].id_os, "Medicus");
 
-		EXPECT_EQ(lista[*largo - 1].dni, 48363884);
-		EXPECT_EQ(lista[*largo - 1].nombre, "Yelle");
-		EXPECT_EQ(lista[*largo - 1].apellido, "Mangum");
-		EXPECT_EQ(lista[*largo - 1].sexo, 'F');
-		EXPECT_EQ(lista[*largo - 1].natalicio.dia, 29);
-		EXPECT_EQ(lista[*largo - 1].natalicio.mes, 1);
-		EXPECT_EQ(lista[*largo - 1].natalicio.anio, 2002);
-		EXPECT_EQ(lista[*largo - 1].estado, "n/c");
-		EXPECT_EQ(lista[*largo - 1].id_os, "Italiano");
+		EXPECT_EQ(lista[n - 1].dni, 48363884);
+		EXPECT_EQ(lista[n - 1].nombre, "Yelle");
+		EXPECT_EQ(lista[n - 1].apellido, "Mangum");
+		EXPECT_EQ(lista[n - 1].sexo, 'F');
+		EXPECT_EQ(lista[n - 1].natalicio.dia, 29);
+		EXPECT_EQ(lista[n - 1].natalicio.mes, 1);
+		EXPECT_EQ(lista[n - 1].natalicio.anio, 2002);
+		EXPECT_EQ(lista[n - 1].estado, "n/c");
+		EXPECT_EQ(lista[n - 1].id_os, "Italiano");
 
 		delete[] lista;
 	}
@@ -88,22 +89,13 @@ namespace PacienteTest::tests {
 namespace auxiliaresTest::tests {
 	TEST(auxiliaresTest, pruebaOrdenarConsultas) {
 		int n = 0;
-		int* largo = &n;
-		Consulta* lista = new Consulta[*largo];
-		string filePath = (BASE_PATH + "../data_files/input/Consultas.csv");
+		Consulta* lista = nullptr;
+		lista = new Consulta[n];
+		//string filePath = (BASE_PATH + "../data_files/input/Consultas.csv");
 
-		cargarDatosConsultas(filePath,lista,largo);
+		cargarDatosConsultas("Consulta.csv", lista, &n);
 
-		ordenarConsultas(lista,largo);
-		/*
-		typedef struct consulta {
-			unsigned int dni_pac;
-			Fecha fechaSoli;
-			Fecha fechaCons;
-			bool presento;
-			string matriculaMed;
-		}Consulta;
-		*/
+		ordenarConsultas(lista,&n);
 
 		EXPECT_EQ(lista[0].dni_pac, 48363884);
 		EXPECT_EQ(lista[0].fechaSoli.dia, 6);
@@ -115,15 +107,15 @@ namespace auxiliaresTest::tests {
 		EXPECT_EQ(lista[0].presento, true);
 		EXPECT_EQ(lista[0].matriculaMed, "59-911-1635");
 
-		EXPECT_EQ(lista[*largo-1].dni_pac, 10242582);
-		EXPECT_EQ(lista[*largo - 1].fechaSoli.dia, 25);
-		EXPECT_EQ(lista[*largo - 1].fechaSoli.mes, 3);
-		EXPECT_EQ(lista[*largo - 1].fechaSoli.anio, 1991);
-		EXPECT_EQ(lista[*largo - 1].fechaCons.dia, 5);
-		EXPECT_EQ(lista[*largo - 1].fechaCons.mes, 10);
-		EXPECT_EQ(lista[*largo - 1].fechaCons.anio, 1991);
-		EXPECT_EQ(lista[*largo - 1].presento, false);
-		EXPECT_EQ(lista[*largo - 1].matriculaMed, "49-626-8557");
+		EXPECT_EQ(lista[n-1].dni_pac, 10242582);
+		EXPECT_EQ(lista[n - 1].fechaSoli.dia, 25);
+		EXPECT_EQ(lista[n - 1].fechaSoli.mes, 3);
+		EXPECT_EQ(lista[n - 1].fechaSoli.anio, 1991);
+		EXPECT_EQ(lista[n - 1].fechaCons.dia, 5);
+		EXPECT_EQ(lista[n - 1].fechaCons.mes, 10);
+		EXPECT_EQ(lista[n - 1].fechaCons.anio, 1991);
+		EXPECT_EQ(lista[n - 1].presento, false);
+		EXPECT_EQ(lista[n - 1].matriculaMed, "49-626-8557");
 
 		delete[] lista;
 	}
@@ -137,5 +129,30 @@ namespace auxiliaresTest::tests {
 		EXPECT_EQ(esBisiesto(2001), false);
 		EXPECT_EQ(esBisiesto(1800), false);
 		EXPECT_EQ(esBisiesto(2022), false);
+	}
+}
+
+namespace DNITest::tests {
+	TEST(chequearDNI,8NUMEROS) {
+		ASSERT_THAT(chequearDNI("44482610"), true);
+	}
+	TEST(chequearDNI, 7NUMEROS) {
+		ASSERT_THAT(chequearDNI("4448261"), true);
+	}
+
+	TEST(chequearDNI, letras) {
+		ASSERT_THAT(chequearDNI("44482l30"), false);
+	}
+
+	TEST(chequearDNI, simbolo) {
+		ASSERT_THAT(chequearDNI("44/2630"), false);
+	}
+
+	TEST(chequearDNI, largoCORTO) {
+		ASSERT_THAT(chequearDNI("4445"), false);
+	}
+
+	TEST(chequearDNI, largo) {
+		ASSERT_THAT(chequearDNI("4448261000"), false);
 	}
 }
