@@ -37,7 +37,7 @@ typedef struct medico {
 }Medico;
 
 typedef struct paciente {
-	unsigned int dni;
+	string dni;
 	string nombre;
 	string apellido;
 	char sexo;
@@ -49,10 +49,10 @@ typedef struct paciente {
 // Todas las funciones "cargar" añaden los datos dentro de un archivo .csv,
 // cuya ubicacion es pasada como parametro, a un listado  que tambien es
 // pasado como parametro junto con su largo en forma de puntero
-void cargarDatosConsultas(string filePath, Consulta*& listado, int* largo);
-void cargarDatosContactos(string filePath, Contacto*& listado, int* largo);
-void cargarDatosMedicos(string filePath, Medico*& listado, int* largo);
-void cargarDatosPacientes(string filePath, Paciente*& listado, int* largo);
+void cargarDatosConsultas(fstream &fp, Consulta*& listado, int* largo);
+void cargarDatosContactos(fstream &fp, Contacto*& listado, int* largo);
+void cargarDatosMedicos(fstream &fp, Medico*& listado, int* largo);
+void cargarDatosPacientes(fstream &fp, Paciente*& listado, int* largo);
 
 // Todas las funciones "agregar" añaden un elemento
 // a un listado ya establecido alargando dicho listado en uno
@@ -71,22 +71,25 @@ void agregarPaciente(Paciente*& listado, Paciente agregar, int* largo);
 void ordenarConsultas(Consulta*& listado, int* largo);
 
 // Hace un filtro al listado de las consultas
-// Dejando en una lista las que pasen dicho filtro,
-// y en otra las que no lo hagan
-void filtradoConsultas(Consulta*& listado, Consulta*& archivados, Consulta*& noArchivados, int* largo,  int* largoArch, int* largoNoArch);
+// Dejando en una lista las que pasen dicho filtro, y en otra las que no lo hagan
+// Crea 2 archivos .csv conteniendo los datos de dichas listas
+// En el main los llamamos archivados.csv y noArchivados.csv
+void filtradoConsultas(fstream& fp, fstream& fp2, Consulta*& listado, Consulta*& archivados, Consulta*& noArchivados, int* largo,  int* largoArch, int* largoNoArch);
 
 
 // Usando los DNIs cargados en noArchivados, se carga en un archivo  llamado "paraContactar.csv", el cual luego seria enviado para secretaria
 // Se tiene en cuenta si el paciente aparece en todas las demas archivos o no
 // Retorna la cantidad de pacientes a contactar
-void paraContactar(Consulta*& noArchivados, Contacto*& listaCont, Medico*& listaMed, Paciente*& listaPac, int* largoNoArch, int* largoCont, int* largoMed, int* largoPac);
+// Crea 1 archivo .csv
+// En el main lo llamamos paraContactar.csv
+void paraContactar(fstream& fp, Consulta*& noArchivados, Contacto*& listaCont, Medico*& listaMed, Paciente*& listaPac, int* largoNoArch, int* largoCont, int* largoMed, int* largoPac);
 
 // Simula usando numeros aleatorios el pase del archivo "paraContactar.csv" a la secretaria
 // Devuelve los resultado en un nuevo archivo llamado "contactados.csv" que seria el resultado final del programa
 // Dicho archivo tendria como orden de datos:
 // nombre , apellido , id_os , retorna , nuevaConsulta
 // En caso de que el paciente no quiera retornar, la nueva consulta estaria como "0/0/0"
-void simularSecretaria();
+void simularSecretaria(fstream& fp, fstream& fp2);
 
 // Funcion auxiliar
 // Retorna true si el anio es bisiesto, false en caso contrario

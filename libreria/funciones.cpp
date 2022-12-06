@@ -1,11 +1,8 @@
 #include "funciones.h"
 
-void cargarDatosConsultas(string filePath, Consulta*& listado, int* largo) {
+void cargarDatosConsultas(fstream &fp, Consulta*& listado, int* largo) {
 	// Creamos el lector de archivos, y 2 strings auxiliares
-	fstream fp;
 	string line = "", headers = "", coma = "";
-	// Abrimos el archivo de Ultimas Consultas
-	fp.open(filePath, ios::in);
 	// Chequeamos si esta abierto o no
 	if (!fp.is_open()) {
 		return;
@@ -21,8 +18,10 @@ void cargarDatosConsultas(string filePath, Consulta*& listado, int* largo) {
 		string auxString = "";
 		stringstream inputString(line);
 
-		getline(inputString, auxString, ' ');
-		auxCons.dni_pac = stoi(auxString);
+		getline(inputString, auxCons.dni_pac, ' ');
+		if (!chequearDNI(auxPac.dni)) {
+			continue;
+		}
 
 		getline(inputString, coma, ' ');
 
@@ -53,11 +52,11 @@ void cargarDatosConsultas(string filePath, Consulta*& listado, int* largo) {
 		getline(inputString, coma, ' ');
 
 		getline(inputString, auxString, ' ');
-		if (auxString == "1") {
-			auxCons.presento = true;
+		if (auxString == "0") {
+			auxCons.presento = false;
 		}
 		else {
-			auxCons.presento = false;
+			auxCons.presento = true;
 		}
 
 		getline(inputString, coma, ' ');
@@ -67,17 +66,11 @@ void cargarDatosConsultas(string filePath, Consulta*& listado, int* largo) {
 		// Agregamos los datos cargados en auxPac al listado de pacientes
 		agregarConsulta(listado, auxCons, largo);
 	}
-	// Cerramos el archivo
-	fp.close();
 }
 
-void cargarDatosContactos(string filePath, Contacto*& listado, int* largo) {
+void cargarDatosContactos(fstream &fp, Contacto*& listado, int* largo) {
 	// Creamos el lector de archivos, y 2 strings auxiliares
-	fstream fp;
 	string line = "", headers = "", coma = "";
-
-	// Abrimos el archivo de Contactos
-	fp.open(filePath, ios::in);
 	// Chequeamos si esta abierto o no
 	if (!fp.is_open()) {
 		return;
@@ -93,8 +86,7 @@ void cargarDatosContactos(string filePath, Contacto*& listado, int* largo) {
 		string auxString = "";
 		stringstream inputString(line);
 
-		getline(inputString, auxString, ' ');
-		auxCont.dni_pac = stoi(auxString);
+		getline(inputString, auxCont.dni_pac, ' ');
 
 		getline(inputString, coma, ' ');
 		
@@ -114,17 +106,11 @@ void cargarDatosContactos(string filePath, Contacto*& listado, int* largo) {
 
 		agregarContacto(listado, auxCont, largo);
 	}
-	// Cerramos el archivo
-	fp.close();
 }
 
-void cargarDatosMedicos(string filePath, Medico*& listado, int* largo) {
+void cargarDatosMedicos(fstream &fp, Medico*& listado, int* largo) {
 	// Creamos el lector de archivos, y 2 strings auxiliares
-	fstream fp;
 	string line = "", headers = "", coma = "";
-
-	// Abrimos el archivo de Pacientes
-	fp.open(filePath, ios::in);
 	// Chequeamos si esta abierto o no
 	if (!fp.is_open()) {
 		return;
@@ -171,17 +157,11 @@ void cargarDatosMedicos(string filePath, Medico*& listado, int* largo) {
 		// Agregamos los datos cargados en auxPac al listado de pacientes
 		agregarMedico(listado, auxMed, largo);
 	}
-	// Cerramos el archivo
-	fp.close();
 }
 
-void cargarDatosPacientes(string filePath, Paciente*& listado, int* largo) {
+void cargarDatosPacientes(fstream &fp, Paciente*& listado, int* largo) {
 	// Creamos el lector de archivos, y 2 strings auxiliares
-	fstream fp;
 	string line = "", headers = "", coma = "";
-
-	// Abrimos el archivo de Pacientes
-	fp.open(filePath, ios::in);
 	// Chequeamos si esta abierto o no
 	if (!fp.is_open()) {
 		return;
@@ -197,16 +177,15 @@ void cargarDatosPacientes(string filePath, Paciente*& listado, int* largo) {
 		string auxString = "";
 		stringstream inputString(line);
 
-		getline(inputString, auxString, ' ');
+		getline(inputString, auxPac.dni, ' ');
+		// Vemos si lo leido es un DNI o no
+		if (!chequearDNI(auxPac.dni)) {
+			continue;
+		}
 
 		getline(inputString, coma, ' ');
 
 		getline(inputString, auxPac.nombre, ' ');
-		
-		if (chequearDNI(auxString)) //VER SI ESTO ES DNI
-		{
-			auxPac.dni = stoi(auxString); //VER SI LO CAMBIAMOS
-		}
 
 		getline(inputString, coma, ' ');
 
@@ -241,11 +220,13 @@ void cargarDatosPacientes(string filePath, Paciente*& listado, int* largo) {
 		// Agregamos los datos cargados en auxPac al listado de pacientes
 		agregarPaciente(listado, auxPac, largo);
 	}
-	// Cerramos el archivo
-	fp.close();
 }
 
+
 void agregarConsulta(Consulta*& listado, Consulta agregar, int* largo) {
+	if (listado == nullptr || largo == nullptr) {
+		return;
+	}
 	*largo += 1;
 	Consulta* newListado = nullptr; //inicializamos
 	newListado = new Consulta[*largo];
@@ -261,6 +242,9 @@ void agregarConsulta(Consulta*& listado, Consulta agregar, int* largo) {
 }
 
 void agregarContacto(Contacto*& listado, Contacto agregar, int* largo) {
+	if (listado == nullptr || largo == nullptr) {
+		return;
+	}
 	*largo += 1;
 	Contacto* newListado = nullptr;
 	newListado = new Contacto[*largo];
@@ -276,6 +260,9 @@ void agregarContacto(Contacto*& listado, Contacto agregar, int* largo) {
 }
 
 void agregarMedico(Medico*& listado, Medico agregar, int* largo) {
+	if (listado == nullptr || largo == nullptr) {
+		return;
+	}
 	*largo += 1;
 	Medico* newListado = nullptr;
 	newListado = new Medico[*largo];
@@ -291,6 +278,9 @@ void agregarMedico(Medico*& listado, Medico agregar, int* largo) {
 }
 
 void agregarPaciente(Paciente*& listado, Paciente agregar, int* largo) {
+	if (listado == nullptr || largo == nullptr) {
+		return;
+	}
 	*largo += 1;
 	Paciente* newListado = nullptr;
 	newListado = new Paciente[*largo];
@@ -307,6 +297,9 @@ void agregarPaciente(Paciente*& listado, Paciente agregar, int* largo) {
 
 
 void ordenarConsultas(Consulta*& listado, int* largo) {
+	if (listado == nullptr || largo == nullptr) {
+		return;
+	}
 	int i, j;
 	int cont = 0;
 	// auxiliar para el swapeo del ordenamiento
@@ -333,26 +326,22 @@ void ordenarConsultas(Consulta*& listado, int* largo) {
 	}
 }
 
-void filtradoConsultas(Consulta*& listado, Consulta*& archivados, Consulta*& noArchivados, 
+void filtradoConsultas(fstream &fp, fstream &fp2, Consulta*& listado, Consulta*& archivados, Consulta*& noArchivados, 
 	int* largo, int* largoArch, int* largoNoArch) {
-	// Primero ordenamos toda la lista de consultas usando una funcion
-	ordenarConsultas(listado, largo);
-	// El listado ahora esta ordenado por documento y luego por fechas
-	fstream fp;
-	fstream fp2;
-
-	string fileArchivados = "archivados.csv";
-	string fileNoArchivados = "noArchivados.csv";
-
-	fp.open(fileArchivados, ios::out);
 	if (!fp.is_open()) {
 		return;
 	}
-
-	fp2.open(fileNoArchivados, ios::out);
 	if (!fp2.is_open()) {
 		return;
 	}
+
+	if (listado == nullptr || archivados == nullptr || noArchivados == nullptr || largo == nullptr || largoArch == nullptr || largoNoArch == nullptr) {
+		return;
+	}
+
+	// Primero ordenamos toda la lista de consultas usando una funcion
+	ordenarConsultas(listado, largo);
+	// El listado ahora esta ordenado por documento y luego por fechas
 
 	// Primero agregamos los encabezados
 	fp << "dni_pac , fechaSoli , fechaCons , presento , matriculaMed , rotulo" << endl;
@@ -377,7 +366,7 @@ void filtradoConsultas(Consulta*& listado, Consulta*& archivados, Consulta*& noA
 		// el j-1 es para que quede posicionado exactamente en la ultima fecha consultada del paciente
 
 
-		float diferencia = difftime(hoy, ultCons) / (60 * 60 * 24);
+		double diferencia = difftime(hoy, ultCons) / (60 * 60 * 24);
 		// 60 por segundos en un minuto, 60 por minutos en una hora, 24 por horas en un dia,
 		// quedando asi la cantidad de dias entre fechas
 		// 
@@ -403,21 +392,21 @@ void filtradoConsultas(Consulta*& listado, Consulta*& archivados, Consulta*& noA
 
 		i = j - 1;
 	}
-	fp.close();
-	fp2.close();
 }
 
-void paraContactar(Consulta*& noArchivados, Contacto*& listaCont, Medico*& listaMed, Paciente*& listaPac, 
+void paraContactar(fstream &fp, Consulta*& noArchivados, Contacto*& listaCont, Medico*& listaMed, Paciente*& listaPac, 
 	int* largoNoArch, int* largoCont, int* largoMed, int* largoPac) {
-	int h, i, j, k;
-	fstream fp;
-	string fileContactar = "paraContactar.csv";
-	bool flag1, flag2, flag3;
-
-	fp.open(fileContactar, ios::out);
 	if (!fp.is_open()) {
 		return;
 	}
+
+	if (noArchivados == nullptr || listaCont == nullptr || listaMed == nullptr || listaPac == nullptr ||
+		largoNoArch == nullptr || largoCont == nullptr || largoMed == nullptr || largoPac == nullptr) {
+		return;
+	}
+
+	int h, i, j, k;
+	bool flag1, flag2, flag3;
 	Paciente auxPac;
 	Contacto auxCont;
 	Medico auxMed;
@@ -464,27 +453,26 @@ void paraContactar(Consulta*& noArchivados, Contacto*& listaCont, Medico*& lista
 		}
 
 	}
-
-	fp.close();
 }
 
-void simularSecretaria() {
-	string filePathContactar = "paraContactar.csv";
-	string filePathContactados = "contactados.csv";
-	srand(time(NULL));
-	fstream fp;
-	fstream fp2;
-	// nombre,apellido,id_os,nuevaCons,retorna
-	// retorna es booleano
-	fp.open(filePathContactar, ios::in);
+void simularSecretaria(fstream &fp, fstream &fp2) {
 	if (!fp.is_open()) {
 		return;
 	}
 
-	fp2.open(filePathContactados, ios::out);
 	if (!fp2.is_open()) {
 		return;
 	}
+	if (noArchivados == nullptr || listaCont == nullptr || listaMed == nullptr || listaPac == nullptr ||
+		largoNoArch == nullptr || largoCont == nullptr || largoMed == nullptr || largoPac == nullptr) {
+		return;
+	}
+	srand(time(NULL));
+
+	// Datos del archivo
+	// nombre,apellido,id_os,nuevaCons,retorna
+	// retorna es booleano
+
 	// Nos salteamos los encabezados
 	string headers = "";
 	getline(fp, headers);
@@ -564,9 +552,6 @@ void simularSecretaria() {
 		fp2 << auxPac.nombre << " , " << auxPac.apellido << " , " << auxPac.id_os << " , " << 
 			retorna << " , " << nuevaConsulta.dia << "/" << nuevaConsulta.mes << "/" << nuevaConsulta.anio << endl;
 	}
-
-	fp.close();
-	fp2.close();
 }
 
 bool esBisiesto(int anio) {
@@ -580,23 +565,20 @@ bool esBisiesto(int anio) {
 	return aux;
 }
 
-bool chequearDNI(string DNI)
-{
+bool chequearDNI(string DNI) {
 	int tam = DNI.length();
 	bool flag = true;
-	if (tam == 7 || tam == 8)
-	{
-		for (int i = 0; i < tam; i++)
-		{//si no son numeros, devuelve falso
-			if (DNI[i] != '0' || DNI[i] != '1' DNI[i] != '2' || DNI[i] != '3' || DNI[i] != '4' || DNI[i] != '5' || DNI[i] != '6' || DNI[i] != '7' || DNI[i] != '8' || DNI[i] != '9')
-			{
+	//si no es de 7 u 8 de largo, devuelve falso
+	if (tam == 7 || tam == 8) {
+		for (int i = 0; i < tam; i++) {
+			//si no son numeros, taambien devuelve falso
+			if (DNI[i] != '0' || DNI[i] != '1' DNI[i] != '2' || DNI[i] != '3' || DNI[i] != '4' || DNI[i] != '5' || DNI[i] != '6' || DNI[i] != '7' || DNI[i] != '8' || DNI[i] != '9') {
 				flag = false;
 				break;
 			}
 		}
 	}
-	else
-	{
+	else {
 		flag = false;
 	}
 	

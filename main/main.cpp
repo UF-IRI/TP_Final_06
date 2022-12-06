@@ -13,56 +13,70 @@ int main(void) {
 	int nMed = 0;
 	int nPac = 0;
 
-	int* largoCons = nullptr;
-	int* largoCont = nullptr;
-	int* largoMed = nullptr;
-	int* largoPac = nullptr;
-
-	largoCons = &nCons;
-	largoCont = &nCont;
-	largoMed = &nMed;
-	largoPac = &nPac;
-
 	// Inicializamos los arrays (todos de 0 de largo)
-	Consulta* listaConsultas = new Consulta[*largoCons];
-	Contacto* listaContactos = new Contacto[*largoCont];
-	Medico* listaMedicos = new Medico[*largoMed];
-	Paciente* listaPacientes = new Paciente[*largoPac];
+	Consulta* listaConsultas = nullptr;
+	listaConsultas = new Consulta[nCons];
 
-	// Aca tendriamos guardada la ubicacion de cada archivo
-	// (seguramente dentro del mismo proyecto)
-	string filePathCons = (BASE_PATH + "../data_files/input/Consultas.csv");
-	string filePathCont = (BASE_PATH + "../data_files/input/Contactos.csv");
-	string filePathMed = (BASE_PATH + "../data_files/input/Medicos.csv");
-	string filePathPac = (BASE_PATH + "../data_files/input/Pacientes.csv");
+	Contacto* listaContactos = nullptr;
+	listaContactos = new Contacto[nCont];
+
+	Medico* listaMedicos = nullptr;
+	listaMedicos = new Medico[nMed];
+
+	Paciente* listaPacientes = nullptr;
+	listaPacientes = new Paciente[nPac];
+
+	// Inicializamos los lectores de archivos
+	fstream fp;
+	fstream fp2;
 
 	// Cargamos en las listas creadas los datos contenidos en cada archivo
-	cargarDatosConsultas(filePathCons, listaConsultas, largoCons);
-	cargarDatosContactos(filePathCont, listaContactos, largoCont);
-	cargarDatosMedicos(filePathMed, listaMedicos, largoMed);
-	cargarDatosPacientes(filePathPac, listaPacientes, largoPac);
+	// utilizando la ruta de cada uno
+	fp.open(BASE_PATH + "../data_files/input/Consultas.csv",ios::in);
+	cargarDatosConsultas(fp, listaConsultas, &nCons);
+	fp.close();
+
+	fp.open(BASE_PATH + "../data_files/input/Contactos.csv", ios::in);
+	cargarDatosContactos(fp, listaContactos, &nCont);
+	fp.close();
+
+	fp.open(BASE_PATH + "../data_files/input/Medicos.csv", ios::in);
+	cargarDatosMedicos(fp, listaMedicos, &nMed);
+	fp.close();
+
+	fp.open(BASE_PATH + "../data_files/input/Pacientes.csv", ios::in);
+	cargarDatosPacientes(fp, listaPacientes, &nPac);
+	fp.close();
 
 	// Creamos las listas auxiliares donde cargariamos
 	// las consultas que pasen y no pasen el filtro
 	// dentro de la funcion busqueda()
-	int nArchivados = 0, nNoArchivados = 0;
+	int nArchivados = 0;
+	int nNoArchivados = 0;
 
-	int* largoArch = nullptr;
-	int* largoNoArch = nullptr;
-	largoArch = &nArchivados;
-	largoNoArch = &nNoArchivados;
+	Consulta* archivados = nullptr;
+	archivados = new Consulta[nArchivados];
 
-	Consulta* archivados = new Consulta[*largoArch];
-	Consulta* noArchivados = new Consulta[*largoNoArch];
+	Consulta* noArchivados = nullptr;
+	noArchivados = new Consulta[nNoArchivados];
 
-	filtradoConsultas(listaConsultas, archivados, noArchivados, largoCons, largoArch, largoNoArch);
+	fp.open("archivados.csv", ios::out);
+	fp2.open("noArchivados.csv", ios::out);
+	filtradoConsultas(fp,fp2,listaConsultas, archivados, noArchivados, &nCons, &nArchivados, &nNoArchivados);
+	fp.close();
+	fp2.close();
 
-	paraContactar(noArchivados, listaContactos, listaMedicos, listaPacientes, largoNoArch, largoCont, largoMed, largoPac);
+	fp.open("paraContactar.csv", ios::out);
+	paraContactar(fp, noArchivados, listaContactos, listaMedicos, listaPacientes, &nNoArchivados, &nCont, &nMed, &nPac);
+	fp.close();
 
-	simularSecretaria();
+	fp.open("paraContactar.csv", ios::in);
+	fp2.open("contactados.csv", ios::out);
+	simularSecretaria(fp,fp2);
+	fp.close();
+	fp2.close();
 
-	// Cuando termine el programa borramos los listados dinamicos,
-	// asi ya no ocupan mas memoria
+	// Cuando termine el programa borramos los listados dinamicos, asi ya no ocupan mas memoria
 	delete[] listaConsultas;
 	delete[] listaContactos;
 	delete[] listaMedicos;
