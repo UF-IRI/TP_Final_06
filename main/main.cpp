@@ -2,6 +2,7 @@
 #include "funciones.h"
 #include <iostream>
 
+// TODOS LOS ARCHIVOS CREADOS SE GUARDAN EN LA MISMA CARPETA DEL main.exe
 // El using namespace std; esta en funciones.h
 // Los testeos estan en casos_base.cpp
 

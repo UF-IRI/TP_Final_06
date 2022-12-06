@@ -19,7 +19,7 @@ void cargarDatosConsultas(fstream &fp, Consulta*& listado, int* largo) {
 		stringstream inputString(line);
 
 		getline(inputString, auxCons.dni_pac, ' ');
-		if (!chequearDNI(auxPac.dni)) {
+		if (!chequearDNI(auxCons.dni_pac)) {
 			continue;
 		}
 
@@ -375,7 +375,7 @@ void filtradoConsultas(fstream &fp, fstream &fp2, Consulta*& listado, Consulta*&
 		diferencia /= 365;
 
 		if (diferencia >= 10 && !listado[j - 1].presento) {
-			unsigned int dniAux = listado[j - 1].dni_pac;
+			string dniAux = listado[j - 1].dni_pac;
 			for (k = j - 1; listado[k].dni_pac == dniAux; k--) {
 				agregarConsulta(archivados, listado[k], largoArch);
 				fp << listado[k].dni_pac << " , " << listado[k].fechaSoli.dia << "/" << listado[k].fechaSoli.mes << "/" << listado[k].fechaSoli.anio <<
@@ -461,10 +461,6 @@ void simularSecretaria(fstream &fp, fstream &fp2) {
 	}
 
 	if (!fp2.is_open()) {
-		return;
-	}
-	if (noArchivados == nullptr || listaCont == nullptr || listaMed == nullptr || listaPac == nullptr ||
-		largoNoArch == nullptr || largoCont == nullptr || largoMed == nullptr || largoPac == nullptr) {
 		return;
 	}
 	srand(time(NULL));
@@ -572,7 +568,7 @@ bool chequearDNI(string DNI) {
 	if (tam == 7 || tam == 8) {
 		for (int i = 0; i < tam; i++) {
 			//si no son numeros, taambien devuelve falso
-			if (DNI[i] != '0' || DNI[i] != '1' DNI[i] != '2' || DNI[i] != '3' || DNI[i] != '4' || DNI[i] != '5' || DNI[i] != '6' || DNI[i] != '7' || DNI[i] != '8' || DNI[i] != '9') {
+			if (DNI[i] < '0' || DNI[i] > '9') {
 				flag = false;
 				break;
 			}
