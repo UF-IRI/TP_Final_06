@@ -15,7 +15,7 @@ namespace Casos_Base::tests {
 		ASSERT_THAT(1, 1);
 	}
 }
-/*
+
 namespace PacienteTest::tests {
 
 	TEST(PacienteTest, pruebaAgregarPaciente) {
@@ -27,7 +27,7 @@ namespace PacienteTest::tests {
 		lista = new Paciente[n];
 		Paciente auxPac;
 
-		auxPac.dni = 42526433;
+		auxPac.dni = "42526433";
 		auxPac.nombre = "Matias";
 		auxPac.apellido = "Larrosa";
 		auxPac.sexo = 'M';
@@ -39,15 +39,15 @@ namespace PacienteTest::tests {
 
 		agregarPaciente(lista, auxPac, &n);
 
-		EXPECT_EQ(lista[0].dni, auxPac.dni);
-		EXPECT_EQ(lista[0].nombre, auxPac.nombre);
-		EXPECT_EQ(lista[0].apellido, auxPac.apellido);
-		EXPECT_EQ(lista[0].sexo, auxPac.sexo);
-		EXPECT_EQ(lista[0].natalicio.dia, auxPac.natalicio.dia);
-		EXPECT_EQ(lista[0].natalicio.mes, auxPac.natalicio.mes);
-		EXPECT_EQ(lista[0].natalicio.anio, auxPac.natalicio.anio);
-		EXPECT_EQ(lista[0].estado, auxPac.estado);
-		EXPECT_EQ(lista[0].id_os, auxPac.id_os);
+		EXPECT_EQ(lista[0].dni, "42526433");
+		EXPECT_EQ(lista[0].nombre, "Matias");
+		EXPECT_EQ(lista[0].apellido, "Larrosa");
+		EXPECT_EQ(lista[0].sexo, 'M');
+		EXPECT_EQ(lista[0].natalicio.dia, 27);
+		EXPECT_EQ(lista[0].natalicio.mes, 02);
+		EXPECT_EQ(lista[0].natalicio.anio, 2001);
+		EXPECT_EQ(lista[0].estado, "fallecido");
+		EXPECT_EQ(lista[0].id_os, "IOSFA");
 		EXPECT_EQ(n, 1);
 
 		delete[] lista;
@@ -60,9 +60,12 @@ namespace PacienteTest::tests {
 		int n = 0;
 		Paciente* lista = nullptr;
 		lista = new Paciente[n];
-		string filePath = (BASE_PATH + "../data_files/input/Pacientes.csv");
-		cargarDatosPacientes(filePath, lista, &n);
-		EXPECT_EQ(lista[0].dni, 10242582);
+		fstream fp;
+		fp.open((BASE_PATH + "../data_files/input/Pacientes.csv"), ios::in);
+		cargarDatosPacientes(fp, lista, &n);
+		fp.close();
+
+		EXPECT_EQ(lista[0].dni, "10242582");
 		EXPECT_EQ(lista[0].nombre, "Cersty");
 		EXPECT_EQ(lista[0].apellido, "Thurston");
 		EXPECT_EQ(lista[0].sexo, 'F');
@@ -72,7 +75,7 @@ namespace PacienteTest::tests {
 		EXPECT_EQ(lista[0].estado, "internado");
 		EXPECT_EQ(lista[0].id_os, "Medicus");
 
-		EXPECT_EQ(lista[n - 1].dni, 48363884);
+		EXPECT_EQ(lista[n - 1].dni, "48363884");
 		EXPECT_EQ(lista[n - 1].nombre, "Yelle");
 		EXPECT_EQ(lista[n - 1].apellido, "Mangum");
 		EXPECT_EQ(lista[n - 1].sexo, 'F');
@@ -91,13 +94,14 @@ namespace auxiliaresTest::tests {
 		int n = 0;
 		Consulta* lista = nullptr;
 		lista = new Consulta[n];
-		//string filePath = (BASE_PATH + "../data_files/input/Consultas.csv");
-
-		cargarDatosConsultas("Consulta.csv", lista, &n);
+		fstream fp;
+		fp.open((BASE_PATH + "../data_files/input/Consultas.csv"), ios::in);
+		cargarDatosConsultas(fp, lista, &n);
+		fp.close();
 
 		ordenarConsultas(lista,&n);
 
-		EXPECT_EQ(lista[0].dni_pac, 48363884);
+		EXPECT_EQ(lista[0].dni_pac, "48363884");
 		EXPECT_EQ(lista[0].fechaSoli.dia, 6);
 		EXPECT_EQ(lista[0].fechaSoli.mes, 11);
 		EXPECT_EQ(lista[0].fechaSoli.anio , 1974);
@@ -107,7 +111,7 @@ namespace auxiliaresTest::tests {
 		EXPECT_EQ(lista[0].presento, true);
 		EXPECT_EQ(lista[0].matriculaMed, "59-911-1635");
 
-		EXPECT_EQ(lista[n-1].dni_pac, 10242582);
+		EXPECT_EQ(lista[n - 1].dni_pac, "10242582");
 		EXPECT_EQ(lista[n - 1].fechaSoli.dia, 25);
 		EXPECT_EQ(lista[n - 1].fechaSoli.mes, 3);
 		EXPECT_EQ(lista[n - 1].fechaSoli.anio, 1991);
@@ -130,29 +134,13 @@ namespace auxiliaresTest::tests {
 		EXPECT_EQ(esBisiesto(1800), false);
 		EXPECT_EQ(esBisiesto(2022), false);
 	}
+
+	TEST(auxiliarestest, pruebaChequearDNI) {
+		EXPECT_EQ(chequearDNI("44482610"), true);
+		EXPECT_EQ(chequearDNI("4448261"), true);
+		EXPECT_EQ(chequearDNI("44482l30"), false);
+		EXPECT_EQ(chequearDNI("44/2630"), false);
+		EXPECT_EQ(chequearDNI("4445"), false);
+		EXPECT_EQ(chequearDNI("4448261000"), false);
+	}
 }
-
-namespace DNITest::tests {
-	TEST(chequearDNI,8NUMEROS) {
-		ASSERT_THAT(chequearDNI("44482610"), true);
-	}
-	TEST(chequearDNI, 7NUMEROS) {
-		ASSERT_THAT(chequearDNI("4448261"), true);
-	}
-
-	TEST(chequearDNI, letras) {
-		ASSERT_THAT(chequearDNI("44482l30"), false);
-	}
-
-	TEST(chequearDNI, simbolo) {
-		ASSERT_THAT(chequearDNI("44/2630"), false);
-	}
-
-	TEST(chequearDNI, largoCORTO) {
-		ASSERT_THAT(chequearDNI("4445"), false);
-	}
-
-	TEST(chequearDNI, largo) {
-		ASSERT_THAT(chequearDNI("4448261000"), false);
-	}
-}*/
